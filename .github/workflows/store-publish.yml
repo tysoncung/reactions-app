@@ -312,10 +312,33 @@ jobs:
 
         $jsonContent | Out-File $tempSubmissionPath -Encoding utf8
 
-        Write-Host "Updating submission metadata..."
+        Write-Host "Preparing submission with package information..."
         try {
-          # Step 1: Update submission with metadata only (no packages yet)
-          # This updates the submission with category, listings, pricing, etc.
+          # Step 1: Load the submission data and add package info
+          $submissionData = Get-Content $tempSubmissionPath -Raw | ConvertFrom-Json
+
+          # Add the package information to the applicationPackages array
+          $packageInfo = @{
+            fileName = $msixFile.Name
+            fileStatus = "PendingUpload"
+            minimumDirectXVersion = "None"
+            minimumSystemRam = "None"
+          }
+
+          # Ensure applicationPackages is an array
+          if (-not $submissionData.applicationPackages) {
+            $submissionData.applicationPackages = @()
+          }
+          $submissionData.applicationPackages += $packageInfo
+          Write-Host "Added package to submission data: $($msixFile.Name)"
+
+          # Save the updated submission data back to file
+          $submissionData | ConvertTo-Json -Depth 10 | Out-File $tempSubmissionPath -Encoding utf8
+          Write-Host "Updated submission JSON file with package info"
+
+          # Step 2: Update submission with all data including packages
+          Write-Host ""
+          Write-Host "Updating submission with metadata and package info..."
           $submission = Update-ApplicationSubmission `
             -AppId $appId `
             -SubmissionId $submissionId `
@@ -324,36 +347,14 @@ jobs:
             -UpdateListings `
             -UpdatePublishModeAndVisibility `
             -UpdatePricingAndAvailability `
-            -UpdateNotesForCertification
+            -UpdateNotesForCertification `
+            -ReplacePackages
 
-          Write-Host "✓ Metadata updated"
+          Write-Host "✓ Submission updated with metadata and package info"
           Write-Host "Submission ID: $($submission.id)"
           Write-Host "Upload URL: $($submission.fileUploadUrl)"
 
-          # Step 2: Add package information to submission
-          Write-Host ""
-          Write-Host "Adding package to submission..."
-
-          # Get the current submission
-          $currentSubmission = Get-ApplicationSubmission -AppId $appId -SubmissionId $submission.id
-
-          # Add the new package to the applicationPackages array
-          $packageInfo = @{
-            fileName = $msixFile.Name
-            fileStatus = "PendingUpload"
-            minimumDirectXVersion = "None"
-            minimumSystemRam = "None"
-          }
-
-          $currentSubmission.applicationPackages += $packageInfo
-          Write-Host "Package added to submission JSON: $($msixFile.Name)"
-
-          # Step 3: Update the submission with the package info
-          Write-Host "Updating submission with package info..."
-          $updatedSubmission = Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $currentSubmission
-          Write-Host "✓ Submission updated with package info"
-
-          # Step 4: Upload the package file
+          # Step 3: Upload the package file to Azure Storage
           Write-Host ""
           Write-Host "Uploading package file to Azure Storage..."
 
@@ -365,7 +366,7 @@ jobs:
           Upload-SubmissionPackage -PackagePath $packageZip -UploadUrl $submission.fileUploadUrl
           Write-Host "✓ Package uploaded successfully"
 
-          # Step 5: Commit the submission
+          # Step 4: Commit the submission
           Write-Host ""
           Write-Host "Committing submission..."
           Complete-ApplicationSubmission -AppId $appId -SubmissionId $submission.id
