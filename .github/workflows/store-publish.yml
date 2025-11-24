@@ -335,11 +335,18 @@ jobs:
         Write-Host "Uploading MSIX package..."
         try {
           # Update submission with package
+          # NOTE: Must include -UpdateAppProperties to apply applicationCategory from JSON
           $submission = Update-ApplicationSubmission `
             -AppId $appId `
             -SubmissionId $submissionId `
             -PackagePath $msixFile.FullName `
-            -SubmissionDataPath $tempSubmissionPath
+            -SubmissionDataPath $tempSubmissionPath `
+            -UpdateAppProperties `
+            -UpdateListings `
+            -UpdatePublishModeAndVisibility `
+            -UpdatePricingAndAvailability `
+            -UpdateNotesForCertification `
+            -AddPackages
 
           Write-Host "Committing submission..."
           Complete-ApplicationSubmission -AppId $appId -SubmissionId $submission.id
