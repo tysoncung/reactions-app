@@ -312,39 +312,23 @@ jobs:
 
         $jsonContent | Out-File $tempSubmissionPath -Encoding utf8
 
-        Write-Host "Creating submission package with New-SubmissionPackage..."
-        # Use New-SubmissionPackage to create a proper package structure
-        # This creates a .json and .zip file pair that StoreBroker expects
-        $packageOutput = "submission-package"
-        New-SubmissionPackage `
-          -ConfigPath $tempSubmissionPath `
-          -AppxPath $msixFile.FullName `
-          -OutPath "." `
-          -OutName $packageOutput `
-          -Verbose
+        Write-Host "Creating package ZIP file..."
+        # StoreBroker's -PackagePath expects a .zip file containing the MSIX
+        # Create a simple ZIP with the MSIX file
+        $packageZip = "package.zip"
+        Compress-Archive -Path $msixFile.FullName -DestinationPath $packageZip -Force
+        Write-Host "Created package ZIP: $packageZip"
 
-        Write-Host "Submission package created: $packageOutput.json and $packageOutput.zip"
-
-        # Verify the package files were created
-        if (-not (Test-Path "$packageOutput.json")) {
-          Write-Error "Package JSON not found: $packageOutput.json"
-          exit 1
-        }
-        if (-not (Test-Path "$packageOutput.zip")) {
-          Write-Error "Package ZIP not found: $packageOutput.zip"
-          exit 1
-        }
-
-        Write-Host "Uploading submission package to Microsoft Store..."
+        Write-Host "Uploading submission to Microsoft Store..."
         try {
-          # Update submission with the properly formatted package
-          # NOTE: Must include -UpdateAppProperties to apply applicationCategory from JSON
-          # NOTE: PackagePath must point to the .zip file created by New-SubmissionPackage
+          # Update submission with package and metadata
+          # NOTE: Must include switches to indicate what to update
+          # NOTE: PackagePath must be a .zip file containing the MSIX
           $submission = Update-ApplicationSubmission `
             -AppId $appId `
             -SubmissionId $submissionId `
-            -SubmissionDataPath "$packageOutput.json" `
-            -PackagePath "$packageOutput.zip" `
+            -SubmissionDataPath $tempSubmissionPath `
+            -PackagePath $packageZip `
             -UpdateAppProperties `
             -UpdateListings `
             -UpdatePublishModeAndVisibility `
