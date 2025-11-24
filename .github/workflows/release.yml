@@ -25,7 +25,7 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --name CameraReactions --windowed --onefile --add-data="assets;assets" src/main.py
+        pyinstaller --name CameraReactions --windowed --onefile src/main.py
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
