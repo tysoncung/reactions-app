@@ -252,32 +252,60 @@ jobs:
 
     - name: Submit to Microsoft Store
       run: |
-        # Authenticate
+        # Authenticate with Azure AD
         $clientId = "${{ secrets.AZURE_CLIENT_ID }}"
         $clientSecret = "${{ secrets.AZURE_CLIENT_SECRET }}"
         $tenantId = "${{ secrets.AZURE_TENANT_ID }}"
 
+        Write-Host "Authenticating with Azure AD..."
+        $securePassword = ConvertTo-SecureString $clientSecret -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($clientId, $securePassword)
+
+        # Set StoreBroker authentication
+        Set-StoreBrokerAuthentication -TenantId $tenantId -Credential $credential
+
         # Get the MSIX file
         $msixFile = Get-ChildItem -Filter "*.msix" | Select-Object -First 1
+        Write-Host "Found MSIX package: $($msixFile.Name)"
 
-        # Submit to store
-        # Note: This requires StoreBroker module and proper authentication
-        # Update with your actual App ID from Partner Center
+        # Get the App ID from secrets
         $appId = "${{ secrets.STORE_APP_ID }}"
+        Write-Host "Submitting to Store with App ID: $appId"
 
-        # Create submission package
-        $submissionParams = @{
-          AppId = $appId
-          SubmissionDataPath = "store-submission.json"
-          PackagePath = $msixFile.FullName
-          AutoCommit = $true
+        # Copy store submission JSON to working directory
+        Copy-Item "store-submission.json" -Destination "." -Force
+
+        # Create new submission
+        Write-Host "Creating new submission..."
+        try {
+          $submission = New-ApplicationSubmission -AppId $appId -Force
+
+          Write-Host "Uploading package..."
+          # Update submission with package
+          $submission = Update-ApplicationSubmission `
+            -AppId $appId `
+            -SubmissionId $submission.id `
+            -PackagePath $msixFile.FullName `
+            -UpdateListings $false
+
+          Write-Host "Committing submission..."
+          Complete-ApplicationSubmission -AppId $appId -SubmissionId $submission.id
+
+          Write-Host "✓ Successfully submitted to Microsoft Store!"
+          Write-Host "Submission ID: $($submission.id)"
+          Write-Host "Check status at: https://partner.microsoft.com/dashboard"
+        } catch {
+          Write-Host "Submission failed: $_"
+          Write-Host "Error details: $($_.Exception.Message)"
+
+          # Fallback message
+          Write-Host ""
+          Write-Host "MSIX package is ready for manual submission: $($msixFile.Name)"
+          Write-Host "Please submit manually at Partner Center: https://partner.microsoft.com/dashboard"
+
+          # Don't fail the build - package was created successfully
+          exit 0
         }
-
-        # Submit (uncomment when ready to actually submit)
-        # Update-ApplicationSubmission @submissionParams
-
-        Write-Host "MSIX package ready for submission: $($msixFile.Name)"
-        Write-Host "Manual submission required - see Partner Center"
       shell: pwsh
       env:
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

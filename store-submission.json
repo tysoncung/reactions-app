@@ -1,0 +1,63 @@
+{
+  "applicationCategory": "Productivity",
+  "pricing": {
+    "trialPeriod": "NoFreeTrial",
+    "marketSpecificPricings": {},
+    "sales": [],
+    "priceId": "Free"
+  },
+  "visibility": "Public",
+  "targetPublishMode": "Immediate",
+  "targetPublishDate": "",
+  "listings": {
+    "en-us": {
+      "baseListing": {
+        "copyrightAndTrademarkInfo": "© 2024 Tyson Cung. All rights reserved.",
+        "keywords": [
+          "camera",
+          "reactions",
+          "video call",
+          "gestures",
+          "effects",
+          "zoom",
+          "teams",
+          "meet"
+        ],
+        "licenseTerms": "",
+        "privacyPolicy": "",
+        "supportContact": "",
+        "websiteUrl": "https://github.com/tysoncung/reactions-app",
+        "description": "Camera Reactions brings animated effects to your video calls with simple hand gestures. Transform your video meetings with hearts, confetti, balloons, thumbs up, and laser effects - all controlled by intuitive hand gestures.\n\nFeatures:\n• 6 gesture-controlled effects: Thumbs Up, Thumbs Down, Peace Sign, Heart Hands, Two Thumbs Up, Raised Fist\n• Real-time hand gesture recognition using MediaPipe\n• Smooth animated overlays: hearts, confetti, balloons, thumbs, and lasers\n• Virtual camera integration for all major video platforms (Zoom, Teams, Google Meet, Discord)\n• Easy-to-use interface with gesture enable/disable toggles\n• Low-latency processing for natural interactions\n• Configurable effect duration and camera settings\n\nHow it works:\n1. Launch Camera Reactions\n2. Select your physical camera\n3. Enable the gestures you want to use\n4. Configure your video app to use 'OBS Virtual Camera'\n5. Make gestures during calls to trigger animated effects\n\nPerfect for:\n• Making video meetings more engaging\n• Adding personality to remote presentations\n• Expressing reactions during virtual events\n• Creating memorable video content\n\nSystem Requirements:\n• Windows 10/11 (64-bit)\n• Webcam\n• OBS Studio (for virtual camera functionality)\n\nPrivacy:\nAll processing happens locally on your device. No data is collected or transmitted.",
+        "releaseNotes": "Initial release:\n• Hand gesture recognition with 6 gestures\n• 5 animated effects\n• Virtual camera support\n• PyQt5 interface\n• Real-time video processing",
+        "images": [
+          {
+            "fileName": "Screenshot1.png",
+            "fileStatus": "PendingUpload",
+            "imageType": "Screenshot"
+          }
+        ],
+        "recommendedHardware": [],
+        "title": "Camera Reactions - Gesture Effects for Video Calls"
+      }
+    }
+  },
+  "hardwarePreferences": [],
+  "automaticBackupEnabled": false,
+  "canInstallOnRemovableMedia": false,
+  "isGameDvrEnabled": false,
+  "gamingOptions": [],
+  "hasExternalInAppProducts": false,
+  "meetAccessibilityGuidelines": true,
+  "notesForCertification": "This application uses:\n• MediaPipe for hand gesture recognition\n• OpenCV for video processing\n• PyQt5 for the user interface\n• pyvirtualcam for virtual camera integration\n\nRequires OBS Virtual Camera driver to be installed separately for virtual camera functionality.\n\nAll image processing happens locally on the user's device. No data is collected or transmitted to external servers.",
+  "applicationPackages": [],
+  "enterpriseLicensing": "None",
+  "allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies": true,
+  "allowTargetFutureDeviceFamilies": {
+    "Desktop": true,
+    "Mobile": false,
+    "Holographic": false,
+    "Xbox": false,
+    "Team": false
+  },
+  "trailers": []
+}
