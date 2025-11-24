@@ -107,10 +107,10 @@ jobs:
           </Applications>
 
           <Capabilities>
+            <rescap:Capability Name="runFullTrust" />
             <Capability Name="internetClient" />
             <DeviceCapability Name="webcam" />
             <DeviceCapability Name="microphone" />
-            <rescap:Capability Name="runFullTrust" />
           </Capabilities>
         </Package>
         "@
