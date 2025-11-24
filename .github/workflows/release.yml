@@ -25,17 +25,12 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --name CameraReactions --windowed --icon=assets/icons/app.ico src/main.py
-
-    - name: Create installer
-      run: |
-        python scripts/build_installer.py
+        pyinstaller --name CameraReactions --windowed --onefile --add-data="assets;assets" src/main.py
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          dist/CameraReactions-Setup.exe
           dist/CameraReactions.exe
         draft: false
         prerelease: false

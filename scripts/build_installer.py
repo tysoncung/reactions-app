@@ -24,7 +24,6 @@ def build_installer():
         '--name=CameraReactions',
         '--windowed',
         '--onefile',
-        '--icon=assets/icons/app.ico',
         '--add-data=assets;assets',
         '--hidden-import=mediapipe',
         '--hidden-import=cv2',
