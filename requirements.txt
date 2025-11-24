@@ -1,0 +1,36 @@
+# Core dependencies
+mediapipe==0.10.8
+opencv-python==4.8.1.78
+numpy==1.24.3
+pillow==10.1.0
+
+# Virtual camera
+pyvirtualcam==0.11.1
+
+# UI Framework
+PyQt5==5.15.10
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.13.0
+
+# Animation & Graphics
+moderngl==5.8.2
+pygame==2.5.2
+
+# Configuration
+pyyaml==6.0.1
+
+# Logging
+colorlog==6.8.0
+
+# Performance
+numba==0.58.1
+
+# System integration
+pywin32==306; sys_platform == 'win32'
+winshell==0.6; sys_platform == 'win32'
+
+# Optional: GPU acceleration
+# onnxruntime-gpu==1.16.3
+
+# Utils
+requests==2.31.0
