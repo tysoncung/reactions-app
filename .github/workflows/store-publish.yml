@@ -17,7 +17,7 @@ permissions:
 env:
   PYTHON_VERSION: '3.10'
   PACKAGE_NAME: 'CameraReactions'
-  PUBLISHER_NAME: 'CN=YourPublisherName'  # Replace with your actual publisher name from Partner Center
+  PUBLISHER_NAME: 'CN=ca320317-438e-4583-8de6-c9195c9cb1f7'  # Windows phone publisher ID from Partner Center
 
 jobs:
   build-msix:
@@ -79,7 +79,7 @@ jobs:
 
           <Properties>
             <DisplayName>Camera Reactions</DisplayName>
-            <PublisherDisplayName>Your Display Name</PublisherDisplayName>
+            <PublisherDisplayName>Tyson Cung</PublisherDisplayName>
             <Logo>Assets\StoreLogo.png</Logo>
             <Description>Add animated reactions to video calls with hand gestures</Description>
           </Properties>
