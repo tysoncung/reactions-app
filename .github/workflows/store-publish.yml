@@ -287,31 +287,15 @@ jobs:
           $submissionId = $newSubmission.id
         }
 
-        Write-Host "Getting submission data (ID: $submissionId)..."
-        $submissionData = Get-ApplicationSubmission -AppId $appId -SubmissionId $submissionId
+        Write-Host "Using store-submission.json for submission data..."
+        $tempSubmissionPath = "temp-submission.json"
 
-        # Check if applicationCategory is NotSet and fix it
-        if ($submissionData.applicationCategory -eq "NotSet" -or [string]::IsNullOrEmpty($submissionData.applicationCategory)) {
-          Write-Host "WARNING: applicationCategory is '$($submissionData.applicationCategory)', setting to Productivity..."
-          $submissionData.applicationCategory = "Productivity"
-        }
+        # Use our store-submission.json file instead of downloading from Microsoft Store
+        Copy-Item "store-submission.json" $tempSubmissionPath
 
+        $submissionData = Get-Content $tempSubmissionPath -Raw | ConvertFrom-Json
         Write-Host "Application Category: $($submissionData.applicationCategory)"
         Write-Host "Pricing: $($submissionData.pricing.priceId)"
-
-        # Save the submission data to a temp file WITH the corrected category
-        $tempSubmissionPath = "temp-submission.json"
-        $jsonContent = $submissionData | ConvertTo-Json -Depth 10
-
-        # Double-check the JSON contains Productivity before saving
-        Write-Host "Verifying JSON contains correct category..."
-        if ($jsonContent -match '"applicationCategory":\s*"NotSet"') {
-          Write-Host "ERROR: JSON still contains NotSet, manual fix needed"
-          $jsonContent = $jsonContent -replace '"applicationCategory":\s*"NotSet"', '"applicationCategory": "Productivity"'
-          Write-Host "Applied string replacement fix"
-        }
-
-        $jsonContent | Out-File $tempSubmissionPath -Encoding utf8
 
         Write-Host "Preparing submission with package information..."
         try {
