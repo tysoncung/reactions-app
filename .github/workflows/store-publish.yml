@@ -57,7 +57,12 @@ jobs:
         } else {
           $tag = "${{ github.ref_name }}"
           $version = $tag -replace 'store-v', ''
-          $version = "$version.0"
+          # Ensure 4-part version (e.g., 1.0 -> 1.0.0.0)
+          $parts = $version -split '\.'
+          while ($parts.Length -lt 4) {
+            $parts += "0"
+          }
+          $version = $parts -join '.'
         }
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         echo "Version: $version"
